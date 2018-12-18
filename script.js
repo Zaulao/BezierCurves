@@ -1,5 +1,7 @@
 var container = document.getElementById('container');
 var canvas = document.getElementById('canvas');
+var points = [];
+
 
 document.getElementById("clear").onclick = function(){
     var ctx = canvas.getContext('2d');
@@ -18,6 +20,15 @@ function resizeToFit() {
 resizeToFit();
 
 canvas.addEventListener("click", draw, false);
+
+canvas.addEventListener("click", (e) => {
+    //console.log(e);
+    var p = {
+        x: e.offsetX,
+        y: e.offsetY
+    }
+    points.push(p);
+})
 
 function draw(e) {
     var rect = canvas.getBoundingClientRect();
