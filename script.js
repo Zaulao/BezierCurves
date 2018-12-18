@@ -136,5 +136,4 @@ const drawCurve = (points, t) => {
 
 for(var t = 0; t <= 1; t+=0.01) {
     drawCurve(ctrlPoints, t)
-    console.log('oi')
 }
