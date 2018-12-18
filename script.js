@@ -64,55 +64,77 @@ const ctrlPoints = [
     {
         x:300,
         y:100
-    },
+    }
+
     // {
     //     x:350,
     //     y:200
     // }
     
 ]
-let bf = {
-    x: 0,
-    y: 0
+for (var i = 0; i < ctrlPoints.length; i++) {
+    ctx.fillStyle = "#BE9063";
+    ctx.arc(ctrlPoints[i].x, ctrlPoints[i].y, 8, 0, 2 * Math.PI);
+    ctx.fill();
 }
+// let bf = {
+//     x: 0,
+//     y: 0
+// }
 
-const get_Interpolation = (t) => {
-    let resultantPoint = {
-        x: 0,
-        y: 0
+// const get_Interpolation = (t) => {
+//     let resultantPoint = {
+//         x: 0,
+//         y: 0
+//     }
+//     for(var i = 0; i < ctrlPoints.length; i++) {
+//         var ber = getBernstein(t, ctrlPoints.length - 1, i)
+//         resultantPoint.x += ber * ctrlPoints[i].x
+//         resultantPoint.y += ber * ctrlPoints[i].y
+//     }
+//     return resultantPoint
+// }
+
+// const getBernstein = (t, n, i) => {
+//     let c = comb(n, i)
+//     pot1 = Math.pow(1 - t, n - i)
+//     pot2 = Math.pow(t, i)
+//     return pot1 * pot2 * c
+// }
+
+// const comb = (n, i) => {
+//     console.log(fat(n, 1))
+//     console.log(fat(i, 1))
+//     console.log(fat(n-i, 1))
+//     return fat(n, 1) / fat(i, 1) * fat(n - i, 1)
+// }
+
+// const fat = (n, sum) => {
+//     if (n == 0) {
+//         return sum
+//     }
+//     return fat(n-1, n * sum)
+// }
+
+const drawCurve = (points, t) => {
+    if (points.length == 1) {
+        var a = points[0].x
+        var b = points[0].y
+        ctx.lineTo(a, b)
+        ctx.stroke()
     }
-    for(var i = 0; i < ctrlPoints.length; i++) {
-        var ber = getBernstein(t, ctrlPoints.length - 1, i)
-        resultantPoint.x += ber * ctrlPoints[i].x
-        resultantPoint.y += ber * ctrlPoints[i].y
+    else {
+        var newpoints = []
+        for(i=0; i < points.length - 1; i++) {
+            var x = (1-t) * points[i].x + t * points[i+1].x
+            var y = (1-t) * points[i].y + t * points[i+1].y
+            newpoints.push({x, y})
+        }
+        drawCurve(newpoints, t)
     }
-    return resultantPoint
-}
-
-const getBernstein = (t, n, i) => {
-    let c = comb(n, i)
-    pot1 = Math.pow(1 - t, n - i)
-    pot2 = Math.pow(t, i)
-    return pot1 * pot2 * c
-}
-
-const comb = (n, i) => {
-    console.log(fat(n, 1))
-    console.log(fat(i, 1))
-    console.log(fat(n-i, 1))
-    return fat(n, 1) / fat(i, 1) * fat(n - i, 1)
-}
-
-const fat = (n, sum) => {
-    if (n == 0) {
-        return sum
-    }
-    return fat(n-1, n * sum)
 }
 
 for(var t = 0; t <= 1; t+=0.01) {
-    bf = get_Interpolation(t)
-    console.log(bf)
-    ctx.lineTo(bf.x, bf.y)
-    ctx.stroke()
+    drawCurve(ctrlPoints, t)
+    console.log('oi')
 }
