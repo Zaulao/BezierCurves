@@ -48,7 +48,7 @@ const ctx = canvas.getContext('2d')
 ctx.clearRect(0, 0, canvas.width, canvas.height);
 ctx.beginPath()
 ctx.moveTo(50, 50)
-const ctrlPoints = [
+const ctrlPoints1 = [
     {
         x: 50,
         y: 50
@@ -72,11 +72,56 @@ const ctrlPoints = [
     // }
     
 ]
-for (var i = 0; i < ctrlPoints.length; i++) {
-    ctx.fillStyle = "#BE9063";
-    ctx.arc(ctrlPoints[i].x, ctrlPoints[i].y, 8, 0, 2 * Math.PI);
-    ctx.fill();
-}
+
+const ctrlPoints2 = [
+    {
+        x: 200,
+        y: 100
+    },
+    {
+        x: 200,
+        y: 300
+    },
+    {
+        x:100,
+        y:300
+    },
+    {
+        x:300,
+        y:400
+    }
+
+    // {
+    //     x:350,
+    //     y:200
+    // }
+    
+]
+
+const ctrlPoints3 = [
+    {
+        x: 200,
+        y: 400
+    },
+    {
+        x: 350,
+        y: 450
+    },
+    {
+        x:400,
+        y:200
+    },
+    {
+        x:500,
+        y:300
+    }
+
+    // {
+    //     x:350,
+    //     y:200
+    // }
+    
+]
 // let bf = {
 //     x: 0,
 //     y: 0
@@ -134,6 +179,39 @@ const drawCurve = (points, t) => {
     }
 }
 
+// for(var t = 0; t <= 1; t+=0.01) {
+//     drawCurve(ctrlPoints1, t)
+// }
+// ctx.moveTo(200, 100)
+// for(var t = 0; t <= 1; t+=0.01) {
+//     drawCurve(ctrlPoints2, t)
+// }
+
+ctx.moveTo(200, 400)
+let ctrlPoints = [ctrlPoints1, ctrlPoints2, ctrlPoints3]
+// let aux = []
+// for(var c = 0; c < ctrlPoints.length; c++) {
+//     for(var i = 0; i < ctrlPoints1.length; i++) {
+//         aux.push({
+//             x: ctrlPoints[c][i].x,
+//             y: ctrlPoints[c][i].y
+//         })
+//     }
+// }
+
+for(var i = 0; i < ctrlPoints.length; i++){
+    for(var c = 0; c < ctrlPoints1.length; c++){
+        ctx.beginPath();
+        ctx.arc(ctrlPoints[i][c].x, ctrlPoints[i][c].y, 20, 0, 2 * Math.PI);
+        ctx.stroke();
+    }
+}
+ctx.beginPath()
+ctx.moveTo(50,50)
+
 for(var t = 0; t <= 1; t+=0.01) {
-    drawCurve(ctrlPoints, t)
+    console.log('a')
+    for( var c = 0; c < ctrlPoints.length; c++){
+        drawCurve(ctrlPoints[c], t)
+    }
 }
