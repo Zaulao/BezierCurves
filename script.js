@@ -1,6 +1,11 @@
 var container = document.getElementById('container');
 var canvas = document.getElementById('canvas');
 
+document.getElementById("clear").onclick = function(){
+    var ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+};
+
 function resizeCanvas(width, height) {
     canvas.width = width;
     canvas.height = height;
