@@ -9,10 +9,15 @@ var controlPoligonalElem = document.getElementById('controlPoligonal');
 var bezierCurveElem = document.getElementById('BezierCurve');
 
 var ctx = canvas.getContext('2d');
-var points = [];
 var curves = [];
+curves[0] = [];
 var count = +newDegree+1;
 canvas.width = window.innerWidth;
+
+var globalI = 0;
+var globalJ = 0;
+var move = false;
+var globalRadius = 8;
 
 controlPointsElem.addEventListener(("change"), (e) => {
     drawEverything();
@@ -23,7 +28,6 @@ controlPoligonalElem.addEventListener(("change"), (e) => {
 bezierCurveElem.addEventListener(("change"), (e) => {
     drawEverything();
 });
-console.log(controlPointsElem.checked)
 
 function drawEverything() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -50,11 +54,11 @@ function drawEverything() {
 
 }
 
-
 class Point {
     constructor(x,y){
         this.x = x;
         this.y = y;
+        this.radius = globalRadius;
     }
 }
 
@@ -90,6 +94,7 @@ canvas.addEventListener('mousemove', function(e) {
     if (move) {
         curves[moveIndexI][moveIndexJ].x = e.offsetX;
         curves[moveIndexI][moveIndexJ].y = e.offsetY;
+        console.log(moveIndexI + " " +  moveIndexJ);
         drawEverything();
     }
 });
@@ -102,16 +107,19 @@ degree.addEventListener("change", (e) => {
     newDegree = document.getElementById('degree').value;
     count = +newDegree+1;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    points = [];
     curves = [];
-    
+    curves[0] = [];
+    globalI = 0;
+    globalJ = 0;
 });
 
 eval.addEventListener("change", (e) => {
     newEval = document.getElementById('evaluations').value;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    points = [];
     curves = [];
+    curves[0] = [];
+    globalI = 0;
+    globalJ = 0;
     
 });
 
@@ -123,37 +131,34 @@ function drawPolygonal(i){
     }
 }
 
-canvas.addEventListener('click', (e) => {
+canvas.addEventListener("mousedown", (e) => {
     move = clickedAnyPoint({
         x: e.offsetX,
         y: e.offsetY
     }) 
-    count--;
-    var p = new Point(e.offsetX, e.offsetY);
-    points.push(p);
-    if(controlPointsElem.checked){
-        draw(e);
+    if(!move){
+        var p = new Point(e.offsetX, e.offsetY);
+        addPoint(p);
     }
-    if(count == 0){
-        curves.push(points);
-        points = [];
-        count = +newDegree+1;
-        if(controlPoligonalElem.checked){
-            drawPolygonal(curves.length-1); 
-        }
-    
-        if(bezierCurveElem.checked){
-            drawCurve(ctx, curves[curves.length-1], newEval);
-        }
-        
-    }
-    // drawEverything();
+    drawEverything();
 });
+
+function addPoint(p){
+    if(globalJ == +newDegree+1){
+        globalI+=1;
+        globalJ=0;
+        curves[globalI] = [];
+    }
+    curves[globalI][globalJ] = p;
+    globalJ+=1;
+}
 
 document.getElementById("clear").onclick = function(){
    ctx.clearRect(0, 0, canvas.width, canvas.height);
-   points = [];
    curves = [];
+   curves[0] = [];
+   globalI = 0;
+   globalJ = 0;
 };
 
 function resizeCanvas(width, height) {
@@ -175,7 +180,7 @@ function draw(e) {
     posy = e.pageY-rect.top;
     ctx.beginPath();
     ctx.fillStyle = "red";
-    ctx.arc(posx, posy, 8 , 0, 2*Math.PI);
+    ctx.arc(posx, posy, globalRadius , 0, 2*Math.PI);
     ctx.fill();
 }
 
@@ -183,7 +188,7 @@ function draw(e) {
 function drawPoints(point){
     ctx.beginPath();
     ctx.fillStyle = "red";
-    ctx.arc(point.x, point.y, 8 , 0, 2*Math.PI);
+    ctx.arc(point.x, point.y, globalRadius , 0, 2*Math.PI);
     ctx.fill();
 }
 
@@ -330,12 +335,14 @@ function drawSurface(context, curves) {
             context.moveTo(k[c].x, k[c].y)
             k[c] = deCasteljau(curves[c], t)
             context.lineTo(k[c.x], k[c].y)
+            context.strokeStyle = "white";
             context.stroke()
         }
         ctx.moveTo(k[0].x, k[0].y)
         for (let i = 0; i <= 1; i+=1/50) {
             aux = deCasteljau(k, i)
             context.lineTo(aux.x, aux.y)
+            context.strokeStyle = "white";
             context.stroke()
         }
     }
