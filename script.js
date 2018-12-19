@@ -1,12 +1,15 @@
 var container = document.getElementById('container');
 var canvas = document.getElementById('canvas');
 var degree = document.getElementById('degree');
+var eval = document.getElementById('evaluations');
 var newDegree = document.getElementById('degree').value;
+var newEval = document.getElementById('evaluations').value;
 
 var ctx = canvas.getContext('2d');
 var points = [];
 var curves = [];
 var count = +newDegree+1;
+canvas.width = window.innerWidth;
 
 class Point {
     constructor(x,y){
@@ -19,27 +22,27 @@ degree.addEventListener("change", (e) => {
     newDegree = document.getElementById('degree').value;
     count = +newDegree+1;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    points = [];
+    curves = [];
     
 });
 
-function drawPolygonal(entrance){
-    let i = entrance;
+eval.addEventListener("change", (e) => {
+    newEval = document.getElementById('evaluations').value;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    points = [];
+    curves = [];
+    
+});
+
+function drawPolygonal(i){
     for(let j=0;j<curves[i].length-1; j++){
         const p1 = curves[i][j];
         const p2 = curves[i][j+1];
-        drawLine(p1,p2);      
+        drawLine(ctx, p1,p2, "#223f47");      
     }
 }
 
-function drawLine(p1, p2){
-    ctx.beginPath();
-    ctx.strokeStyle = "#FF0000";
-    ctx.moveTo(p1.x, p1.y);
-    ctx.lineTo(p2.x, p2.y);
-    ctx.stroke();
-}
-
-//aqui
 canvas.addEventListener('click', (e) => {
     count--;
     var p = new Point(e.offsetX, e.offsetY);
@@ -51,6 +54,8 @@ canvas.addEventListener('click', (e) => {
         count = +newDegree+1;
         console.log(curves);
         drawPolygonal(curves.length-1); 
+        drawCurve(ctx, curves[curves.length-1], newEval);
+        
     }
     console.log(curves.length);
 });
@@ -78,7 +83,7 @@ function draw(e) {
     posx = e.pageX-rect.left;
     posy = e.pageY-rect.top;
     ctx.beginPath();
-    ctx.fillStyle = "#BE9063";
+    ctx.fillStyle = "red";
     ctx.arc(posx, posy, 4 , 0, 2*Math.PI);
     ctx.fill();
 }
@@ -86,6 +91,54 @@ function draw(e) {
 
 ctx.clearRect(0, 0, canvas.width, canvas.height);
 ctx.beginPath()
+
+
+function deCasteljau (points, t) {
+    if (points.length == 1) {
+        return points[0];
+        /*var a = points[0].x;
+        var b = points[0].y;
+         ctx.lineTo(a, b);
+        ctx.lineWidth = 0.5;
+        ctx.strokeStyle = "blue";
+        ctx.stroke();*/
+    }
+    else {
+        var newpoints = []
+        for(var i=0; i < points.length - 1; i++) {
+            var x = (1-t) * points[i].x + t * points[i+1].x;
+            var y = (1-t) * points[i].y + t * points[i+1].y;
+            newpoints.push(new Point(x, y));
+        }
+        return deCasteljau(newpoints, t);
+    }
+}
+
+function drawCurve(context, curves, evaluation){
+    var t = 0;
+    var curvePoints = [];
+    for(var i = 0; i < +evaluation+1; i++){
+        console.log("pimba: "+deCasteljau(curves, t));
+        curvePoints.push(deCasteljau(curves, t));
+        
+        t += 1/evaluation;
+        console.log("t: "+t);
+    }
+
+    for(var i = 0; i < curvePoints.length-1; i++){
+        drawLine(context, curvePoints[i], curvePoints[i+1], "white");
+    }
+}
+
+function drawLine(contex, p1, p2, color){
+    contex.beginPath();
+    contex.moveTo(p1.x, p1.y);
+    contex.lineTo(p2.x, p2.y);
+    contex.strokeStyle = color;
+    contex.lineWidth = 1;
+    contex.stroke();
+}
+
 //ctx.moveTo(50, 50)
 
 // const ctrlPoints1 = [
@@ -201,27 +254,7 @@ ctx.beginPath()
 //     return fat(n-1, n * sum)
 // }
 
-// const drawCurve = (points, t) => {
-//     if (points.length == 1) {
-//         var a = points[0].x
-//         var b = points[0].y
-//         ctx.lineTo(a, b)
-//         ctx.stroke()
-//     }
-//     else {
-//         var newpoints = []
-//         for(i=0; i < points.length - 1; i++) {
-//             var x = (1-t) * points[i].x + t * points[i+1].x
-//             var y = (1-t) * points[i].y + t * points[i+1].y
-//             newpoints.push({x, y})
-//         }
-//         drawCurve(newpoints, t)
-//     }
-// }
 
-// // for(var t = 0; t <= 1; t+=0.01) {
-// //     drawCurve(ctrlPoints1, t)
-// // }
 // // ctx.moveTo(200, 100)
 // // for(var t = 0; t <= 1; t+=0.01) {
 // //     drawCurve(ctrlPoints2, t)
