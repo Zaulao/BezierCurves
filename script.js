@@ -7,12 +7,15 @@ var newEval = document.getElementById('evaluations').value;
 var controlPointsElem = document.getElementById('controlPoints');
 var controlPoligonalElem = document.getElementById('controlPoligonal');
 var bezierCurveElem = document.getElementById('BezierCurve');
+var surfaceOp = document.getElementById('surface');
+var drawSurfaceop = false;
 
 var ctx = canvas.getContext('2d');
 var curves = [];
 curves[0] = [];
 var count = +newDegree+1;
 canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
 var globalI = 0;
 var globalJ = 0;
@@ -28,6 +31,10 @@ controlPoligonalElem.addEventListener(("change"), (e) => {
 bezierCurveElem.addEventListener(("change"), (e) => {
     drawEverything();
 });
+
+surfaceOp.addEventListener(("change"), (e) => {
+    drawEverything();
+})
 
 function drawEverything() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -50,6 +57,9 @@ function drawEverything() {
         for(var i=0;i<curves.length;i++){
             drawCurve(ctx, curves[i], newEval)
         }
+    }
+    if(surfaceOp.checked){
+        drawfinal();
     }
 
 }
@@ -171,7 +181,6 @@ function resizeToFit() {
     resizeCanvas(width, height);
 }
 resizeToFit();
-//canvas.addEventListener("click", draw, false);
 
 //draw points from the clicks
 function draw(e) {
@@ -210,85 +219,19 @@ function deCasteljau (points, t) {
     }
 }
 
-// const ctrlPoints1 = [
-//     {
-//         x: 50,
-//         y: 50
-//     },
-//     {
-//         x:100,
-//         y:100
-//     },
-//     {
-//         x:50,
-//         y: 150
-//     },
-//     {
-//         x:100,
-//         y:200
-//     }
-
-//     // {
-//     //     x:350,
-//     //     y:200
-//     // }
-    
-// ]
-
-// const ctrlPoints2 = [
-//     {
-//         x: 250,
-//         y: 100
-//     },
-//     {
-//         x: 300,
-//         y: 150
-//     },
-//     {
-//         x:250,
-//         y:200
-//     },
-//     {
-//         x:300,
-//         y:250
-//     }
-
-//     // {
-//     //     x:350,
-//     //     y:200
-//     // }
-    
-// ]
-
-// const ctrlPoints3 = [
-//     {
-//         x: 400,
-//         y: 50
-//     },
-//     {
-//         x: 450,
-//         y: 100
-//     },
-//     {
-//         x:400,
-//         y:150
-//     },
-//     {
-//         x:450,
-//         y:200
-//     }
-
-//     // {
-//     //     x:350,
-//     //     y:200
-//     // }
-    
-// ]
-
-document.getElementById("surface").onclick = function(){
+function drawfinal(){
     let control = lastCurves(curves);
     drawSurface(ctx, curves)
     drawSurface(ctx, control);
+    drawSurfaceop = true;
+}
+
+document.getElementById("surface").onclick = function(){
+    // let control = lastCurves(curves);
+    // drawSurface(ctx, curves)
+    // drawSurface(ctx, control);
+    // drawSurfaceop = true;
+    drawfinal();
 };
 
 var grd = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
@@ -299,7 +242,6 @@ grd.addColorStop(3/6, "#00ff00");
 grd.addColorStop(4/6, "#ffff00");
 grd.addColorStop(5/6, "#ff7f00");
 grd.addColorStop(1, "ff0000");
-
 
 function drawSurface(context, curves) {
     context.beginPath()
@@ -346,7 +288,7 @@ function drawSurface(context, curves) {
     context.strokeStyle = grd;
     context.lineWidth = 0.5;
     context.stroke()
-
+    
 }
 
 function lastCurves(curves) {
