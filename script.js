@@ -204,6 +204,7 @@ function drawPoints(point){
 
 ctx.clearRect(0, 0, canvas.width, canvas.height);
 ctx.beginPath()
+
 function deCasteljau (points, t) {
     if (points.length == 1) {
         return points[0];
