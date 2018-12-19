@@ -2,6 +2,7 @@ var container = document.getElementById('container');
 var canvas = document.getElementById('canvas');
 var degree = document.getElementById('degree');
 var newDegree = document.getElementById('degree').value;
+
 var ctx = canvas.getContext('2d');
 var points = [];
 var curves = [];
@@ -21,6 +22,22 @@ degree.addEventListener("change", (e) => {
     
 });
 
+function drawPolygonal(entrance){
+    let i = entrance;
+    for(let j=0;j<curves[i].length-1; j++){
+        const p1 = curves[i][j];
+        const p2 = curves[i][j+1];
+        drawLine(p1,p2);      
+    }
+}
+
+function drawLine(p1, p2){
+    ctx.beginPath();
+    ctx.strokeStyle = "#FF0000";
+    ctx.moveTo(p1.x, p1.y);
+    ctx.lineTo(p2.x, p2.y);
+    ctx.stroke();
+}
 
 //aqui
 canvas.addEventListener('click', (e) => {
@@ -33,11 +50,15 @@ canvas.addEventListener('click', (e) => {
         points = [];
         count = +newDegree+1;
         console.log(curves);
-    } 
+        drawPolygonal(curves.length-1); 
+    }
+    console.log(curves.length);
 });
 
 document.getElementById("clear").onclick = function(){
    ctx.clearRect(0, 0, canvas.width, canvas.height);
+   points = [];
+   curves = [];
 };
 
 function resizeCanvas(width, height) {
@@ -62,83 +83,85 @@ function draw(e) {
     ctx.fill();
 }
 
+
 ctx.clearRect(0, 0, canvas.width, canvas.height);
 ctx.beginPath()
-ctx.moveTo(50, 50)
-const ctrlPoints1 = [
-    {
-        x: 50,
-        y: 50
-    },
-    {
-        x:100,
-        y:100
-    },
-    {
-        x:200,
-        y:0
-    },
-    {
-        x:300,
-        y:100
-    }
+//ctx.moveTo(50, 50)
 
-    // {
-    //     x:350,
-    //     y:200
-    // }
+// const ctrlPoints1 = [
+//     {
+//         x: 50,
+//         y: 50
+//     },
+//     {
+//         x:100,
+//         y:100
+//     },
+//     {
+//         x:200,
+//         y:0
+//     },
+//     {
+//         x:300,
+//         y:100
+//     }
+
+//     // {
+//     //     x:350,
+//     //     y:200
+//     // }
     
-]
+// ]
 
-const ctrlPoints2 = [
-    {
-        x: 200,
-        y: 100
-    },
-    {
-        x: 200,
-        y: 300
-    },
-    {
-        x:100,
-        y:300
-    },
-    {
-        x:300,
-        y:400
-    }
+// const ctrlPoints2 = [
+//     {
+//         x: 200,
+//         y: 100
+//     },
+//     {
+//         x: 200,
+//         y: 300
+//     },
+//     {
+//         x:100,
+//         y:300
+//     },
+//     {
+//         x:300,
+//         y:400
+//     }
 
-    // {
-    //     x:350,
-    //     y:200
-    // }
+//     // {
+//     //     x:350,
+//     //     y:200
+//     // }
     
-]
+// ]
 
-const ctrlPoints3 = [
-    {
-        x: 200,
-        y: 400
-    },
-    {
-        x: 350,
-        y: 450
-    },
-    {
-        x:400,
-        y:200
-    },
-    {
-        x:500,
-        y:300
-    }
+// const ctrlPoints3 = [
+//     {
+//         x: 200,
+//         y: 400
+//     },
+//     {
+//         x: 350,
+//         y: 450
+//     },
+//     {
+//         x:400,
+//         y:200
+//     },
+//     {
+//         x:500,
+//         y:300
+//     }
 
-    // {
-    //     x:350,
-    //     y:200
-    // }
+//     // {
+//     //     x:350,
+//     //     y:200
+//     // }
     
-]
+// ]
 // let bf = {
 //     x: 0,
 //     y: 0
@@ -178,57 +201,57 @@ const ctrlPoints3 = [
 //     return fat(n-1, n * sum)
 // }
 
-const drawCurve = (points, t) => {
-    if (points.length == 1) {
-        var a = points[0].x
-        var b = points[0].y
-        ctx.lineTo(a, b)
-        ctx.stroke()
-    }
-    else {
-        var newpoints = []
-        for(i=0; i < points.length - 1; i++) {
-            var x = (1-t) * points[i].x + t * points[i+1].x
-            var y = (1-t) * points[i].y + t * points[i+1].y
-            newpoints.push({x, y})
-        }
-        drawCurve(newpoints, t)
-    }
-}
-
-// for(var t = 0; t <= 1; t+=0.01) {
-//     drawCurve(ctrlPoints1, t)
-// }
-// ctx.moveTo(200, 100)
-// for(var t = 0; t <= 1; t+=0.01) {
-//     drawCurve(ctrlPoints2, t)
-// }
-
-ctx.moveTo(200, 400)
-let ctrlPoints = [ctrlPoints1, ctrlPoints2, ctrlPoints3]
-// let aux = []
-// for(var c = 0; c < ctrlPoints.length; c++) {
-//     for(var i = 0; i < ctrlPoints1.length; i++) {
-//         aux.push({
-//             x: ctrlPoints[c][i].x,
-//             y: ctrlPoints[c][i].y
-//         })
+// const drawCurve = (points, t) => {
+//     if (points.length == 1) {
+//         var a = points[0].x
+//         var b = points[0].y
+//         ctx.lineTo(a, b)
+//         ctx.stroke()
+//     }
+//     else {
+//         var newpoints = []
+//         for(i=0; i < points.length - 1; i++) {
+//             var x = (1-t) * points[i].x + t * points[i+1].x
+//             var y = (1-t) * points[i].y + t * points[i+1].y
+//             newpoints.push({x, y})
+//         }
+//         drawCurve(newpoints, t)
 //     }
 // }
 
-for(var i = 0; i < ctrlPoints.length; i++){
-    for(var c = 0; c < ctrlPoints1.length; c++){
-        ctx.beginPath();
-        ctx.arc(ctrlPoints[i][c].x, ctrlPoints[i][c].y, 20, 0, 2 * Math.PI);
-        ctx.stroke();
-    }
-}
-ctx.beginPath()
-ctx.moveTo(50,50)
+// // for(var t = 0; t <= 1; t+=0.01) {
+// //     drawCurve(ctrlPoints1, t)
+// // }
+// // ctx.moveTo(200, 100)
+// // for(var t = 0; t <= 1; t+=0.01) {
+// //     drawCurve(ctrlPoints2, t)
+// // }
 
-for(var t = 0; t <= 1; t+=0.01) {
-    console.log('a')
-    for( var c = 0; c < ctrlPoints.length; c++){
-        drawCurve(ctrlPoints[c], t)
-    }
-}
+// ctx.moveTo(200, 400)
+// let ctrlPoints = [ctrlPoints1, ctrlPoints2, ctrlPoints3]
+// // let aux = []
+// // for(var c = 0; c < ctrlPoints.length; c++) {
+// //     for(var i = 0; i < ctrlPoints1.length; i++) {
+// //         aux.push({
+// //             x: ctrlPoints[c][i].x,
+// //             y: ctrlPoints[c][i].y
+// //         })
+// //     }
+// // }
+
+// for(var i = 0; i < ctrlPoints.length; i++){
+//     for(var c = 0; c < ctrlPoints1.length; c++){
+//         ctx.beginPath();
+//         ctx.arc(ctrlPoints[i][c].x, ctrlPoints[i][c].y, 20, 0, 2 * Math.PI);
+//         ctx.stroke();
+//     }
+// }
+// ctx.beginPath()
+// ctx.moveTo(50,50)
+
+// for(var t = 0; t <= 1; t+=0.01) {
+//     console.log('a')
+//     for( var c = 0; c < ctrlPoints.length; c++){
+//         drawCurve(ctrlPoints[c], t)
+//     }
+// }
