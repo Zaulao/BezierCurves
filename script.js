@@ -210,118 +210,96 @@ function deCasteljau (points, t) {
     }
 }
 
-// let u = []
-// for(var i = 0; i < ctrlPoints.length; i++){ //Control Points Circles
-//     for(var c = 0; c < ctrlPoints1.length; c++){
-//         ctx.beginPath();
-//         ctx.arc(ctrlPoints[i][c].x, ctrlPoints[i][c].y, 10, 0, 2 * Math.PI);
-//         ctx.stroke();
+// const ctrlPoints1 = [
+//     {
+//         x: 50,
+//         y: 50
+//     },
+//     {
+//         x:100,
+//         y:100
+//     },
+//     {
+//         x:50,
+//         y: 150
+//     },
+//     {
+//         x:100,
+//         y:200
 //     }
-// }
 
-// for(var t = 0; t <= 1; t+=1/100) { //superficie de Bezier
-//     u = []
-//     var curvePoints = [];
-//     ctx.beginPath();
-//     for( var c = 0; c < curves.length; c++){
-//         // ctx.moveTo(ctrlPoints[c][0].x, ctrlPoints[c][0].y)
-//         u.push(deCasteljau(ctrlPoints[c], t))
-//     }
-//     ctx.moveTo(u[0].x, u[0].y)
-//     for(var i = 0; i <= 1; i+=1/100) {
-//         deCasteljau(u, i)
-//     }
-// }
-
-
-// for (let t = 0; t <= 1; t+=1/50) {
-//     for ( let c = 0; c < ctrlPoints.length; c++) {
-//         ctx.moveTo(k[c].x, k[c].y)
-//         k[c] = drawCurve(ctrlPoints[c], t)
-//     }
-//     ctx.moveTo(k[0].x, k[0].y)
-//     for (let i = 0; i <= 1; i+=1/50) {
-//         drawCurve(k, i)
-//     }
-// }
-
-
-const ctrlPoints1 = [
-    {
-        x: 50,
-        y: 50
-    },
-    {
-        x:100,
-        y:100
-    },
-    {
-        x:50,
-        y: 150
-    },
-    {
-        x:100,
-        y:200
-    }
-
-    // {
-    //     x:350,
-    //     y:200
-    // }
+//     // {
+//     //     x:350,
+//     //     y:200
+//     // }
     
-]
+// ]
 
-const ctrlPoints2 = [
-    {
-        x: 250,
-        y: 100
-    },
-    {
-        x: 300,
-        y: 150
-    },
-    {
-        x:250,
-        y:200
-    },
-    {
-        x:300,
-        y:250
-    }
+// const ctrlPoints2 = [
+//     {
+//         x: 250,
+//         y: 100
+//     },
+//     {
+//         x: 300,
+//         y: 150
+//     },
+//     {
+//         x:250,
+//         y:200
+//     },
+//     {
+//         x:300,
+//         y:250
+//     }
 
-    // {
-    //     x:350,
-    //     y:200
-    // }
+//     // {
+//     //     x:350,
+//     //     y:200
+//     // }
     
-]
+// ]
 
-const ctrlPoints3 = [
-    {
-        x: 400,
-        y: 50
-    },
-    {
-        x: 450,
-        y: 100
-    },
-    {
-        x:400,
-        y:150
-    },
-    {
-        x:450,
-        y:200
-    }
+// const ctrlPoints3 = [
+//     {
+//         x: 400,
+//         y: 50
+//     },
+//     {
+//         x: 450,
+//         y: 100
+//     },
+//     {
+//         x:400,
+//         y:150
+//     },
+//     {
+//         x:450,
+//         y:200
+//     }
 
-    // {
-    //     x:350,
-    //     y:200
-    // }
+//     // {
+//     //     x:350,
+//     //     y:200
+//     // }
     
-]
-let ctrlPoints = [ctrlPoints1, ctrlPoints2, ctrlPoints3]
-drawSurface(ctx, ctrlPoints)
+// ]
+
+document.getElementById("surface").onclick = function(){
+    let control = lastCurves(curves);
+    drawSurface(ctx, curves)
+    drawSurface(ctx, control);
+};
+
+var grd = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+grd.addColorStop(0, "#9400d3");
+grd.addColorStop(1/6, "#4b0082");
+grd.addColorStop(2/6, "#0000ff");
+grd.addColorStop(3/6, "#00ff00");
+grd.addColorStop(4/6, "#ffff00");
+grd.addColorStop(5/6, "#ff7f00");
+grd.addColorStop(1, "ff0000");
+
 
 function drawSurface(context, curves) {
     context.beginPath()
@@ -330,22 +308,55 @@ function drawSurface(context, curves) {
     for (let i = 0; i < curves.length; i++) {
         k.push(curves[i][0])
     }
-    for (let t = 0; t <= 1; t+=1/50) {
+    for (let t = 0; t < 1; t+=1/newEval) {
         for (let c = 0; c < curves.length; c++) {
             context.moveTo(k[c].x, k[c].y)
             k[c] = deCasteljau(curves[c], t)
             context.lineTo(k[c.x], k[c].y)
-            context.strokeStyle = "white";
-            context.stroke()
         }
         ctx.moveTo(k[0].x, k[0].y)
-        for (let i = 0; i <= 1; i+=1/50) {
+        for (let i = 0; i < 1; i+=1/newEval) {
             aux = deCasteljau(k, i)
             context.lineTo(aux.x, aux.y)
-            context.strokeStyle = "white";
+            context.strokeStyle = grd;
+            context.lineWidth = 0.5;
             context.stroke()
         }
+        aux = deCasteljau(k, 1)
+        context.lineTo(aux.x, aux.y)
+        context.strokeStyle = grd;
+        context.lineWidth = 0.5;
+        context.stroke()
     }
+    for (let c = 0; c < curves.length; c++) {
+        context.moveTo(k[c].x, k[c].y)
+        k[c] = deCasteljau(curves[c], 1)
+        context.lineTo(k[c.x], k[c].y)
+    }
+    ctx.moveTo(k[0].x, k[0].y)
+    for (let i = 0; i < 1; i+=1/newEval) {
+        aux = deCasteljau(k, i)
+        context.lineTo(aux.x, aux.y)
+        context.strokeStyle = grd;
+        context.lineWidth = 0.5;
+        context.stroke()
+    }
+    aux = deCasteljau(k, 1)
+    context.lineTo(aux.x, aux.y)
+    context.strokeStyle = grd;
+    context.lineWidth = 0.5;
+    context.stroke()
+
+}
+
+function lastCurves(curves) {
+    let control = [];
+    for (let i = 0; i < curves[0].length; i++) {
+        control.push([]);
+        for (let j = 0; j < curves.length; j++)
+            control[i].push(curves[j][i]);
+    }
+    return control;
 }
 
 function drawCurve(context, curves, evaluation){
