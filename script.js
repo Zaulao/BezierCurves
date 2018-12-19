@@ -58,12 +58,12 @@ const ctrlPoints1 = [
         y:100
     },
     {
-        x:200,
-        y:0
+        x:50,
+        y:150
     },
     {
-        x:300,
-        y:100
+        x:100,
+        y:200
     }
 
     // {
@@ -76,19 +76,19 @@ const ctrlPoints1 = [
 const ctrlPoints2 = [
     {
         x: 200,
+        y: 50
+    },
+    {
+        x: 250,
         y: 100
     },
     {
-        x: 200,
-        y: 300
+        x:200,
+        y:150
     },
     {
-        x:100,
-        y:300
-    },
-    {
-        x:300,
-        y:400
+        x:250,
+        y:200
     }
 
     // {
@@ -100,20 +100,20 @@ const ctrlPoints2 = [
 
 const ctrlPoints3 = [
     {
-        x: 200,
-        y: 400
+        x: 400,
+        y: 50
     },
     {
-        x: 350,
-        y: 450
+        x: 450,
+        y: 100
     },
     {
         x:400,
-        y:200
+        y:150
     },
     {
-        x:500,
-        y:300
+        x:450,
+        y:200
     }
 
     // {
@@ -122,51 +122,17 @@ const ctrlPoints3 = [
     // }
     
 ]
-// let bf = {
-//     x: 0,
-//     y: 0
-// }
 
-// const get_Interpolation = (t) => {
-//     let resultantPoint = {
-//         x: 0,
-//         y: 0
-//     }
-//     for(var i = 0; i < ctrlPoints.length; i++) {
-//         var ber = getBernstein(t, ctrlPoints.length - 1, i)
-//         resultantPoint.x += ber * ctrlPoints[i].x
-//         resultantPoint.y += ber * ctrlPoints[i].y
-//     }
-//     return resultantPoint
-// }
-
-// const getBernstein = (t, n, i) => {
-//     let c = comb(n, i)
-//     pot1 = Math.pow(1 - t, n - i)
-//     pot2 = Math.pow(t, i)
-//     return pot1 * pot2 * c
-// }
-
-// const comb = (n, i) => {
-//     console.log(fat(n, 1))
-//     console.log(fat(i, 1))
-//     console.log(fat(n-i, 1))
-//     return fat(n, 1) / fat(i, 1) * fat(n - i, 1)
-// }
-
-// const fat = (n, sum) => {
-//     if (n == 0) {
-//         return sum
-//     }
-//     return fat(n-1, n * sum)
-// }
-
-const drawCurve = (points, t) => {
+const drawCurve = (points, t) => {  // Casteljau
     if (points.length == 1) {
         var a = points[0].x
         var b = points[0].y
         ctx.lineTo(a, b)
         ctx.stroke()
+        // ctx.beginPath()
+        // ctx.moveTo(a, b)
+        var r = {x: a, y: b}
+        return (r)
     }
     else {
         var newpoints = []
@@ -175,43 +141,29 @@ const drawCurve = (points, t) => {
             var y = (1-t) * points[i].y + t * points[i+1].y
             newpoints.push({x, y})
         }
-        drawCurve(newpoints, t)
+        return drawCurve(newpoints, t)
     }
 }
 
-// for(var t = 0; t <= 1; t+=0.01) {
-//     drawCurve(ctrlPoints1, t)
-// }
-// ctx.moveTo(200, 100)
-// for(var t = 0; t <= 1; t+=0.01) {
-//     drawCurve(ctrlPoints2, t)
-// }
-
-ctx.moveTo(200, 400)
 let ctrlPoints = [ctrlPoints1, ctrlPoints2, ctrlPoints3]
-// let aux = []
-// for(var c = 0; c < ctrlPoints.length; c++) {
-//     for(var i = 0; i < ctrlPoints1.length; i++) {
-//         aux.push({
-//             x: ctrlPoints[c][i].x,
-//             y: ctrlPoints[c][i].y
-//         })
-//     }
-// }
-
-for(var i = 0; i < ctrlPoints.length; i++){
+let u = []
+for(var i = 0; i < ctrlPoints.length; i++){ //Control Points Circles
     for(var c = 0; c < ctrlPoints1.length; c++){
         ctx.beginPath();
-        ctx.arc(ctrlPoints[i][c].x, ctrlPoints[i][c].y, 20, 0, 2 * Math.PI);
+        ctx.arc(ctrlPoints[i][c].x, ctrlPoints[i][c].y, 10, 0, 2 * Math.PI);
         ctx.stroke();
     }
 }
-ctx.beginPath()
-ctx.moveTo(50,50)
 
-for(var t = 0; t <= 1; t+=0.01) {
-    console.log('a')
+for(var t = 0; t <= 1; t+=1/100) { //superficie de Bezier
+    u = []
+    ctx.beginPath();
     for( var c = 0; c < ctrlPoints.length; c++){
-        drawCurve(ctrlPoints[c], t)
+        // ctx.moveTo(ctrlPoints[c][0].x, ctrlPoints[c][0].y)
+        u.push(drawCurve(ctrlPoints[c], t))
+    }
+    ctx.moveTo(u[0].x, u[0].y)
+    for(var i = 0; i <= 1; i+=1/100) {
+        drawCurve(u, i)
     }
 }
