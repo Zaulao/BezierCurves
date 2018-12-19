@@ -1,11 +1,43 @@
 var container = document.getElementById('container');
 var canvas = document.getElementById('canvas');
+var degree = document.getElementById('degree');
+var newDegree = document.getElementById('degree').value;
+var ctx = canvas.getContext('2d');
 var points = [];
+var curves = [];
+var count = +newDegree+1;
 
+class Point {
+    constructor(x,y){
+        this.x = x;
+        this.y = y;
+    }
+}
+
+degree.addEventListener("change", (e) => {
+    newDegree = document.getElementById('degree').value;
+    count = +newDegree+1;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+});
+
+
+//aqui
+canvas.addEventListener('click', (e) => {
+    count--;
+    var p = new Point(e.offsetX, e.offsetY);
+    points.push(p);
+    console.log(p);
+    if(count == 0){
+        curves.push(points);
+        points = [];
+        count = +newDegree+1;
+        console.log(curves);
+    } 
+});
 
 document.getElementById("clear").onclick = function(){
-    var ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+   ctx.clearRect(0, 0, canvas.width, canvas.height);
 };
 
 function resizeCanvas(width, height) {
@@ -20,31 +52,16 @@ function resizeToFit() {
 resizeToFit();
 canvas.addEventListener("click", draw, false);
 
-canvas.addEventListener("click", (e) => {
-    //console.log(e);
-    var p = {
-        x: e.offsetX,
-        y: e.offsetY
-    }
-    points.push(p);
-})
-
 function draw(e) {
     var rect = canvas.getBoundingClientRect();
-    var ctx = canvas.getContext('2d');
     posx = e.pageX-rect.left;
     posy = e.pageY-rect.top;
     ctx.beginPath();
     ctx.fillStyle = "#BE9063";
-    ctx.arc(posx, posy, 8 , 0, 2*Math.PI);
+    ctx.arc(posx, posy, 4 , 0, 2*Math.PI);
     ctx.fill();
-    ctx.beginPath();
-    ctx.strokeStyle = "#BE9063";
-    ctx.arc(posx, posy, 16 , 0, 2*Math.PI);
-    ctx.stroke();
 }
 
-const ctx = canvas.getContext('2d')
 ctx.clearRect(0, 0, canvas.width, canvas.height);
 ctx.beginPath()
 ctx.moveTo(50, 50)
